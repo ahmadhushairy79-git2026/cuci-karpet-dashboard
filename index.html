@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ms" class="h-full bg-gray-950 text-gray-100">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuci Karpet & Services - Sales Dashboard 2026</title>
+    <meta name="description"
+        content="Dashboard interaktif untuk data jualan cuci karpet, langsir, sofa, tilam, dan kasut bagi tahun 2026.">
+    <!-- Google Fonts: Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Custom styling -->
+    <link rel="stylesheet" href="css/custom.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chart.js DataLabels Plugin CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+</head>
+
+<body class="h-full font-sans antialiased bg-gray-950 text-gray-100 overflow-x-hidden">
+    <div class="min-h-screen flex flex-col md:flex-row">
+        <!-- Sidebar Controls -->
+        <aside
+            class="w-full md:w-80 bg-gray-900 border-b md:border-b-0 md:border-r border-gray-800/80 p-6 flex flex-col justify-between shrink-0">
+            <div>
+                <!-- Brand Header -->
+                <div class="flex items-center space-x-3 mb-8">
+                    <div
+                        class="w-10 h-10 rounded-xl bg-gradient-to-tr from-violet-600 to-cyan-500 flex items-center justify-center shadow-lg shadow-violet-500/20">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 002 2h2a2 2 0 002-2z">
+                            </path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1
+                            class="text-lg font-bold leading-tight tracking-wide bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent">
+                            Cuci Karpet</h1>
+                        <span class="text-xs text-gray-400 font-medium">Business Dashboard</span>
+                    </div>
+                </div>
+
+                <!-- Navigation/Controls Section -->
+                <div class="space-y-6">
+                    <!-- Toggle Jualan Karpet -->
+                    <div class="bg-gray-800/40 p-4 rounded-xl border border-gray-700/50">
+                        <label for="carpetTypeToggle"
+                            class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Pilihan Data
+                            Karpet</label>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-medium text-gray-200" id="carpetLabel">Utama / Alternatif</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="carpetTypeToggle" class="sr-only peer">
+                                <div
+                                    class="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-violet-600">
+                                </div>
+                            </label>
+                        </div>
+                        <p class="text-xxs text-gray-500 mt-2 leading-relaxed">Menukar jualan Karpet antara fail Sheet1
+                            (Utama) dan SALES KARPET 1 (Alternatif).</p>
+                    </div>
+
+                    <!-- Import Fail JSON -->
+                    <div class="bg-gray-800/40 p-4 rounded-xl border border-gray-700/50">
+                        <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Import
+                            Data Jualan</label>
+                        <label
+                            class="flex flex-col items-center justify-center w-full h-24 border-2 border-gray-700 border-dashed rounded-lg cursor-pointer hover:bg-gray-800/40 hover:border-violet-500/50 transition-all">
+                            <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                <svg class="w-6 h-6 text-gray-400 mb-1" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
+                                    </path>
+                                </svg>
+                                <p class="text-xs text-gray-400"><span class="font-medium">Klik untuk upload</span></p>
+                                <p class="text-xxs text-gray-500">Fail JSON sahaja</p>
+                            </div>
+                            <input id="importFileInput" type="file" accept=".json" class="hidden" />
+                        </label>
+                    </div>
+
+                    <!-- GitHub Sync Config -->
+                    <div class="bg-gray-800/40 p-4 rounded-xl border border-gray-700/50 space-y-3">
+                        <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">GitHub
+                            Sync</label>
+                        <div>
+                            <input type="password" id="ghToken" placeholder="GitHub Personal Access Token"
+                                class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs text-gray-200 placeholder-gray-500 focus:outline-none focus:border-violet-500 transition-colors">
+                        </div>
+                        <div>
+                            <input type="text" id="ghRepo" placeholder="username/repo-name"
+                                class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs text-gray-200 placeholder-gray-500 focus:outline-none focus:border-violet-500 transition-colors">
+                        </div>
+                        <div>
+                            <input type="text" id="ghPath" placeholder="Path (Pilihan: data.json)"
+                                class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs text-gray-200 placeholder-gray-500 focus:outline-none focus:border-violet-500 transition-colors">
+                        </div>
+                        <button id="btnSyncGitHub"
+                            class="w-full bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white rounded-lg py-2 text-xs font-medium shadow-md shadow-violet-900/10 transition-all">Segerakkan
+                            Sekarang</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Controls -->
+            <div class="mt-8 pt-4 border-t border-gray-800">
+                <button id="btnReset"
+                    class="w-full bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg py-2.5 text-xs font-medium border border-gray-700/50 transition-colors">Tetapkan
+                    Semula Data Asal</button>
+                <div class="text-center mt-4">
+                    <span class="text-xxs text-gray-600 font-medium">Dashboard v1.0.0 • 2026</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Dashboard Dashboard Content -->
+        <main class="flex-1 p-6 md:p-8 space-y-6 overflow-y-auto">
+            <!-- Header section -->
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+                <div>
+                    <h2 class="text-2xl font-bold tracking-tight text-white">Dashboard Analisis Jualan 2026</h2>
+                    <p class="text-sm text-gray-400">Ringkasan hasil jualan cuci karpet dan perkhidmatan sampingan.</p>
+                </div>
+                <div
+                    class="bg-gray-900/60 border border-gray-800 rounded-lg px-4 py-2 flex items-center space-x-2 text-xs text-gray-400 font-medium shadow-sm">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span>Tahun Kewangan: 2026 (Jan – Apr)</span>
+                </div>
+            </div>
+
+            <!-- KPI Summary Cards Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                <!-- KPI 1: Total Sales -->
+                <div
+                    class="glass-card p-5 rounded-2xl flex flex-col justify-between relative overflow-hidden glow-purple animate-fade-in-up">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Jumlah Jualan
+                            Kasar</span>
+                        <div
+                            class="w-8 h-8 rounded-lg bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-400">
+                            RM
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight" id="kpiTotalSales">RM
+                            0</h3>
+                        <div class="text-xs mt-1 text-gray-400 flex items-center">
+                            <span>Berdasarkan 5 kategori perkhidmatan</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KPI 2: Total Receipts -->
+                <div class="glass-card p-5 rounded-2xl flex flex-col justify-between relative overflow-hidden glow-cyan animate-fade-in-up"
+                    style="animation-delay: 0.1s;">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Jumlah Resit
+                            (Transaksi)</span>
+                        <div
+                            class="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                </path>
+                            </svg>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight" id="kpiTotalReceipts">
+                            0</h3>
+                        <div class="text-xs mt-1 text-gray-400">
+                            <span>Resit jualan berdaftar</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KPI 3: Average Order Value (AOV) -->
+                <div class="glass-card p-5 rounded-2xl flex flex-col justify-between relative overflow-hidden animate-fade-in-up"
+                    style="animation-delay: 0.2s;">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Purata Nilai Resit
+                            (AOV)</span>
+                        <div
+                            class="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                                </path>
+                            </svg>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight" id="kpiAOV">RM 0</h3>
+                        <div class="text-xs mt-1 text-gray-400">
+                            <span>Purata RM bagi setiap bil/transaksi</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KPI 4: MoM Growth -->
+                <div class="glass-card p-5 rounded-2xl flex flex-col justify-between relative overflow-hidden animate-fade-in-up"
+                    style="animation-delay: 0.3s;">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Pertumbuhan
+                            Jualan</span>
+                        <div
+                            class="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight" id="kpiGrowth">-</h3>
+                        <div class="text-xs mt-1 text-gray-400">
+                            <span>Perbandingan bulan terakhir vs bulan sebelumnya</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Monthly Sales Trend Chart (Line) -->
+                <div class="glass-panel p-6 rounded-2xl lg:col-span-2 flex flex-col">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h4 class="text-md font-bold text-white">Trend Jualan Bulanan (RM)</h4>
+                            <p class="text-xs text-gray-400">Analisis tren hasil mengikut kategori</p>
+                        </div>
+                    </div>
+                    <div class="relative flex-1 min-h-[300px]">
+                        <canvas id="salesTrendChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Category Share (Doughnut Chart) -->
+                <div class="glass-panel p-6 rounded-2xl flex flex-col">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h4 class="text-md font-bold text-white">Peratusan Mengikut Kategori</h4>
+                            <p class="text-xs text-gray-400">Agregat sumbangan jualan kasar</p>
+                        </div>
+                    </div>
+                    <div class="relative flex-1 min-h-[300px] flex items-center justify-center">
+                        <canvas id="categoryShareChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Receipts vs Sales (Combo Chart) -->
+            <div class="glass-panel p-6 rounded-2xl">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h4 class="text-md font-bold text-white">Nisbah Transaksi Berbanding Jualan Keseluruhan</h4>
+                        <p class="text-xs text-gray-400">Membandingkan bilangan transaksi (resit) dengan jumlah nilai
+                            jualan kasar</p>
+                    </div>
+                </div>
+                <div class="relative min-h-[250px]">
+                    <canvas id="receiptsVSsalesChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Prediction Panel -->
+            <div id="predictionPanel"></div>
+
+            <!-- Detailed Breakdown Data Table -->
+            <div class="glass-panel rounded-2xl overflow-hidden">
+                <div
+                    class="p-6 border-b border-gray-800/80 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div>
+                        <h4 class="text-md font-bold text-white">Perincian Rekod Data Asal</h4>
+                        <p class="text-xs text-gray-400">Kombinasi data jualan kasar & bilangan transaksi mengikut bulan
+                        </p>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <select id="filterMonth"
+                            class="bg-gray-900 border border-gray-700 text-gray-300 text-xs rounded-lg focus:ring-violet-500 focus:border-violet-500 block p-2">
+                            <option value="ALL">Semua Bulan</option>
+                            <option value="January">Januari</option>
+                            <option value="February">Februari</option>
+                            <option value="March">Mac</option>
+                            <option value="April">April</option>
+                        </select>
+                        <select id="filterCategory"
+                            class="bg-gray-900 border border-gray-700 text-gray-300 text-xs rounded-lg focus:ring-violet-500 focus:border-violet-500 block p-2">
+                            <option value="ALL">Semua Kategori</option>
+                            <option value="Karpet">Karpet</option>
+                            <option value="Kasut">Kasut</option>
+                            <option value="Langsir">Langsir</option>
+                            <option value="Sofa">Sofa</option>
+                            <option value="Tilam">Tilam</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-800">
+                        <thead class="bg-gray-900/60">
+                            <tr>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                                    Bulan</th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                                    Kategori Perkhidmatan</th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-right text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                                    Jualan Kasar (RM)</th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-right text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                                    Bilangan Resit</th>
+                            </tr>
+                        </thead>
+                        <tbody id="salesTableBody" class="divide-y divide-gray-800/40 bg-transparent">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Application scripts -->
+    <script src="js/storage.js"></script>
+    <script src="js/import.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/prediction.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+
+</html>
