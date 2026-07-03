@@ -260,31 +260,4 @@ function setupEventListeners() {
         });
     }
 
-    // 4. GitHub Sync
-    const btnSync = document.getElementById('btnSyncGitHub');
-    if (btnSync) {
-        btnSync.addEventListener('click', async () => {
-            const token = document.getElementById('ghToken').value.trim();
-            const repo = document.getElementById('ghRepo').value.trim();
-            const path = document.getElementById('ghPath').value.trim() || 'bisnes-servis-dashboard/data/sample-data.json';
-
-            if (!token || !repo) {
-                alert('Sila isi GitHub Personal Access Token dan Repositori.');
-                return;
-            }
-
-            btnSync.disabled = true;
-            btnSync.innerText = 'Menyegerakkan...';
-
-            try {
-                await syncToGitHub(dashboardData, token, repo, path);
-                alert('Data berjaya disegerakkan ke GitHub!');
-            } catch (err) {
-                alert(`Gagal menyegerakkan ke GitHub: ${err.message}`);
-            } finally {
-                btnSync.disabled = false;
-                btnSync.innerText = 'Segerakkan Sekarang';
-            }
-        });
-    }
 }
